@@ -19,22 +19,42 @@ pipeline {
               }
             }
         }
-        stage('Docker Build and Push') {
+      stage('Mutation Testing (PIT)') {
             steps {
-              withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+              sh 'mvn org.pitest:pitest-maven:mutationCoverage'
+            }
+            post {
+              always {
+                  // Archive les rapports générés (XML + HTML)
+                  archiveArtifacts artifacts: 'target/pit-reports/**', allowEmptyArchive: true
+                  // Publie le rapport HTML dans l'interface Jenkins (nécessite le plugin HTML Publisher)
+                  publishHTML(target: [
+                      reportDir: 'target/pit-reports',
+                      reportFiles: 'index.html',
+                      reportName: 'PIT Mutation Report',
+                      keepAll: true,
+                      alwaysLinkToLastBuild: true,
+                      allowMissing: false
+                  ])
+                }
+            }
+         }  
+      stage('Docker Build and Push') {
+          steps {
+            withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
                 sh 'printenv'
                 sh 'docker build -t ednoush01/numeric-app:""$GIT_COMMIT"" .'
                 sh 'docker push ednoush01/numeric-app:""$GIT_COMMIT""'
                 }
             }
         }	
-        stage('Kubernetes Deployment - DEV') {
-            steps {
-            withKubeConfig([credentialsId: 'kubeconfig']) {
+      stage('Kubernetes Deployment - DEV') {
+         steps {
+           withKubeConfig([credentialsId: 'kubeconfig']) {
             sh "sed -i 's#replace#dnoush01/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml"
           }
         }
-     }
+     }   
   }
 }
