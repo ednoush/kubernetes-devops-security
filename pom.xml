@@ -61,7 +61,6 @@
           </execution>
         </executions>
       </plugin>
-    </plugins>
 
       <!-- PIT Mutation test Plugin -->
       <plugin>
@@ -83,6 +82,6 @@
           </outputFormats>
         </configuration> 
       </plugin>
-   </plugins>
+    </plugins>
   </build>
 </project>
