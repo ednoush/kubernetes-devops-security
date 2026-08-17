@@ -62,10 +62,8 @@
         </executions>
       </plugin>
     </plugins>
-  </build>
 
       <!-- PIT Mutation test Plugin -->
-    <plugins>
       <plugin>
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
@@ -86,4 +84,5 @@
         </configuration> 
       </plugin>
    </plugins>
+  </build>
 </project>
