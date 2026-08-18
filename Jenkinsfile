@@ -39,6 +39,11 @@ pipeline {
                 }
             }
          }  
+      stage('SonarQube -SAST') {
+            steps {
+              sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numerica-application -Dsonar.projectName='numerica-application' -Dsonar.host.url=http://sonarqube.devsecops-local.click:9000 -Dsonar.token=sqp_615d46791ec4d5b2f817f817033741305495634a"
+            }
+        }  
       stage('Docker Build and Push') {
           steps {
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
@@ -51,7 +56,7 @@ pipeline {
       stage('Kubernetes Deployment - DEV') {
          steps {
            withKubeConfig([credentialsId: 'kubeconfig']) {
-            sh "sed -i 's#replace#dnoush01/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+            sh "sed -i 's#replace#ednoush01/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml"
           }
         }
