@@ -46,7 +46,8 @@ pipeline {
             timeout(time: 2, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
             }  
-        }  
+           }
+  }  
       stage('Docker Build and Push') {
           steps {
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
