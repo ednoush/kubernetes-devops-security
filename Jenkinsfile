@@ -54,9 +54,6 @@ pipeline {
             steps {
                 sh "mvn org.owasp:dependency-check-maven:check"
             }
-            withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
-                sh "mvn org.owasp:dependency-check-maven:check"
-              } 
             post {
               always {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
