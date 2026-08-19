@@ -45,9 +45,11 @@ pipeline {
                 sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
                     -Dsonar.projectKey=numerica-application \
                     -Dsonar.projectName='numerica-application' \
-                    -Dsonar.host.url=http://sonarqube.devsecops-local.click:9000 \
-                    -Dsonar.token=sqp_8701b6cce98a7a431a3d86f32dfb17a0addb3a3f"
+                    -Dsonar.host.url=http://sonarqube.devsecops-local.click:9000"
             } 
+            timeout(time: 2, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
+        }
          }
       }   
       stage('Docker Build and Push') {
