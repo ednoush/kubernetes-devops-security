@@ -91,6 +91,8 @@
             <configuration>
               <format>ALL</format>
               <failBuildonCVSS>5</failBuildonCVSS>
+              <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+              <knownExploitedEnabled>false</knownExploitedEnabled>
             </configuration>
         </plugin>
     </plugins>
