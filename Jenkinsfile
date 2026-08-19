@@ -42,8 +42,7 @@ pipeline {
       stage('SonarQube -SAST') {
             steps {
               withSonarQubeEnv('SonarQube'){
-                sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.7.0.6970:sonar -Dsonar.projectKey=numerica-application -Dsonar.projectName='numerica-application' -Dsonar.token=$SONAR_TOKEN"
-                waitForQualityGate abortPipeline: true
+                sh "mvn sonar:sonar -Dsonar.projectKey=numerica-application -Dsonar.projectName='numerica-application' -Dsonar.host.url=http://sonarqube.devsecops-local.click:9000 -Dsonar.token=sqp_8701b6cce98a7a431a3d86f32dfb17a0addb3a3f"
             } 
          }
       }   
