@@ -42,7 +42,6 @@ pipeline {
       stage('SonarQube -SAST') {
             steps {
               withSonarQubeEnv('SonarQube'){
-                sh 'mvn sonar:sonar'
                 sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numerica-application -Dsonar.projectName='numerica-application'"
                 waitForQualityGate abortPipeline: true
             } 
