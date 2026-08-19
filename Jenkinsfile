@@ -49,6 +49,17 @@ pipeline {
                     -Dsonar.token=sqp_8701b6cce98a7a431a3d86f32dfb17a0addb3a3f"
             } 
          }
+      } 
+      stage('Vulnerability Scan - Docker') {
+            steps {
+                sh "mvn dependency-check:check"
+            } 
+            post {
+              always {
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+              }
+            }
+         }
       }   
       stage('Docker Build and Push') {
           steps {
