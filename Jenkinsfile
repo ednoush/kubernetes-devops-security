@@ -59,8 +59,7 @@ pipeline {
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
               }
             }
-         }
-      }   
+         }   
       stage('Docker Build and Push') {
           steps {
             withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
@@ -75,7 +74,8 @@ pipeline {
            withKubeConfig([credentialsId: 'kubeconfig']) {
             sh "sed -i 's#replace#ednoush01/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml"
-          }
-        }
-     }
-  } 
+            }
+         }
+      }
+    }
+ }  
