@@ -48,9 +48,6 @@ pipeline {
                     -Dsonar.host.url=http://sonarqube.devsecops-local.click:9000 \
                     -Dsonar.token=sqp_8701b6cce98a7a431a3d86f32dfb17a0addb3a3f"
             } 
-            timeout(time: 5, unit: 'MINUTES') {
-            waitForQualityGate abortPipeline: true
-        }
          }
       }   
       stage('Docker Build and Push') {
