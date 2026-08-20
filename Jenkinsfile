@@ -61,7 +61,6 @@ pipeline {
             steps {
               sh 'bash trivy-scan-image.sh'
             }     
-          }
             post {
               always {
                 archiveArtifacts artifacts: 'target/dependency-check-report.html, target/dependency-check-report.xml', allowEmptyArchive: true
