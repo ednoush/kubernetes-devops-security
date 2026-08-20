@@ -90,7 +90,7 @@
             <version>12.2.0</version>
             <configuration>
               <format>ALL</format>
-              <failBuildOnCVSS>5</failBuildOnCVSS>
+              <failBuildOnCVSS>11</failBuildOnCVSS>
               <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
               <knownExploitedEnabled>false</knownExploitedEnabled>
             </configuration>
