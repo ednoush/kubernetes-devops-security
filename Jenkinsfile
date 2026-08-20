@@ -51,11 +51,20 @@ pipeline {
          }
       } 
       stage('Vulnerability Scan - Docker') {
+        parallel {
+          stage('Dependency Scan') {
             steps {
-                sh "mvn org.owasp:dependency-check-maven:check"
+              sh 'mvn org.owasp:dependency-check-maven:check'
             }
+          }
+          stage('Trivy Scan') {
+            steps {
+              sh 'bash trivy-scan-image.sh'
+            }     
+          }
             post {
               always {
+                archiveArtifacts artifacts: 'target/dependency-check-report.html, target/dependency-check-report.xml', allowEmptyArchive: true
                 dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
               }
             }
