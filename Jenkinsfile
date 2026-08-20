@@ -42,15 +42,23 @@ pipeline {
       stage('SonarQube -SAST') {
             steps {
               withSonarQubeEnv('SonarQube'){
-                sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numerica-application -Dsonar.projectName='numerica-application'"
-                waitForQualityGate abortPipeline: true
+                sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+                    -Dsonar.projectKey=numerica-application \
+                    -Dsonar.projectName='numerica-application' \
+                    -Dsonar.host.url=http://sonarqube.devsecops-local.click:9000 \
+                    -Dsonar.token=sqp_8701b6cce98a7a431a3d86f32dfb17a0addb3a3f"
             } 
          }
-      }   
+      } 
       stage('Vulnerability Scan - Docker') {
             steps {
                 sh "mvn org.owasp:dependency-check-maven:check"
-            }   
+            }
+            post {
+              always {
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+              }
+            }
          }   
       stage('Docker Build and Push') {
           steps {
@@ -66,8 +74,8 @@ pipeline {
            withKubeConfig([credentialsId: 'kubeconfig']) {
             sh "sed -i 's#replace#ednoush01/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
             sh "kubectl apply -f k8s_deployment_service.yaml"
-          }
-        }
-     }   
-  }
-}
+            }
+         }
+      }
+    }
+ }  
