@@ -12,31 +12,10 @@ pipeline {
             steps {
               sh "mvn test" 
             }
-            post {
-              always {
-                junit 'target/surefire-reports/*.xml'
-                jacoco execPattern: 'target/jacoco.exec'
-              }
-            }
         }
       stage('Mutation Testing (PIT)') {
             steps {
               sh 'mvn org.pitest:pitest-maven:mutationCoverage'
-            }
-            post {
-              always {
-                  // Archive les rapports générés (XML + HTML)
-                  archiveArtifacts artifacts: 'target/pit-reports/**', allowEmptyArchive: true
-                  // Publie le rapport HTML dans l'interface Jenkins (nécessite le plugin HTML Publisher)
-                  publishHTML(target: [
-                      reportDir: 'target/pit-reports',
-                      reportFiles: 'index.html',
-                      reportName: 'PIT Mutation Report',
-                      keepAll: true,
-                      alwaysLinkToLastBuild: true,
-                      allowMissing: false
-                  ])
-                }
             }
          }  
       stage('SonarQube -SAST') {
@@ -53,12 +32,7 @@ pipeline {
       stage('Vulnerability Scan - Docker') {
             steps {
                 sh "mvn org.owasp:dependency-check-maven:check"
-            }
-            post {
-              always {
-                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-              }
-            }
+            }   
          }   
       stage('Docker Build and Push') {
           steps {
@@ -77,5 +51,23 @@ pipeline {
             }
          }
       }
+      post {
+              always {
+                junit 'target/surefire-reports/*.xml'
+                jacoco execPattern: 'target/jacoco.exec'
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+                // Archive les rapports générés (XML + HTML)
+                archiveArtifacts artifacts: 'target/pit-reports/**', allowEmptyArchive: true
+                  // Publie le rapport HTML dans l'interface Jenkins (nécessite le plugin HTML Publisher)
+                publishHTML(target: [
+                     reportDir: 'target/pit-reports',
+                     reportFiles: 'index.html',
+                     reportName: 'PIT Mutation Report',
+                     keepAll: true,
+                     alwaysLinkToLastBuild: true,
+                     allowMissing: false
+            ])
+          }
+       }
     }
  }  
