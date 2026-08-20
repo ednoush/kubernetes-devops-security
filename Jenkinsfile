@@ -51,21 +51,21 @@ pipeline {
             }
          }
       }
-      post {
-              always {
-                junit 'target/surefire-reports/*.xml'
-                jacoco execPattern: 'target/jacoco.exec'
-                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-                // Archive les rapports générés (XML + HTML)
-                archiveArtifacts artifacts: 'target/pit-reports/**', allowEmptyArchive: true
-                  // Publie le rapport HTML dans l'interface Jenkins (nécessite le plugin HTML Publisher)
-                publishHTML(target: [
-                     reportDir: 'target/pit-reports',
-                     reportFiles: 'index.html',
-                     reportName: 'PIT Mutation Report',
-                     keepAll: true,
-                     alwaysLinkToLastBuild: true,
-                     allowMissing: false
+    post {
+             always {
+              junit 'target/surefire-reports/*.xml'
+              jacoco execPattern: 'target/jacoco.exec'
+              dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+              // Archive les rapports générés (XML + HTML)
+              archiveArtifacts artifacts: 'target/pit-reports/**', allowEmptyArchive: true
+             // Publie le rapport HTML dans l'interface Jenkins (nécessite le plugin HTML Publisher)
+              publishHTML(target: [
+                   reportDir: 'target/pit-reports',
+                   reportFiles: 'index.html',
+                   reportName: 'PIT Mutation Report',
+                   keepAll: true,
+                   alwaysLinkToLastBuild: true,
+                   allowMissing: false
             ])
           }
        }
